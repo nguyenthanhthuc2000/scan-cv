@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
 import { FormEvent } from 'react';
 import {
   Select,
@@ -24,16 +23,14 @@ interface EditProps {
 }
 
 export default function Edit({ campaign }: EditProps) {
-  console.log(campaign);
-  const { data, setData, post, processing, errors } = useForm({
-    title: '',
-    description: '',
-    quantity: '10',
-    status: 'active',
-    position: '',
+  
+  const { data, setData, processing, errors, patch } = useForm({
+    title: campaign.title,
+    description: campaign.description || '',
+    quantity: campaign.quantity,
+    status: campaign.status,
+    position: campaign.position,
   });
-
-  const { toast } = useToast();
 
   const breadcrumbs = [
     { title: 'Quản đợt tuyển dụng', href: route('recruitment-campaigns.index') },
@@ -42,22 +39,20 @@ export default function Edit({ campaign }: EditProps) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
-    post(route('recruitment-campaigns.update', { recruitment_campaign: campaign.id }), {
+    patch(route('recruitment-campaigns.update', { recruitment_campaign: campaign.id }), {
+      preserveScroll: true,
       onSuccess: () => {
-        toast({
-          title: 'Thành công',
-          description: 'Cập nhật đợt tuyển dụng thành công',
-        });
       },
       onError: () => {
-        toast({
-          title: 'Lỗi',
-          description: 'Có lỗi xảy ra',
-          variant: 'destructive',
-        });
       },
     });
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value)) {
+      setData('quantity', value);
+    }
   };
 
   return (
@@ -117,7 +112,7 @@ export default function Edit({ campaign }: EditProps) {
                     type="number"
                     value={data.quantity}
                     min="1"
-                    onChange={e => setData('quantity', e.target.value)}
+                    onChange={handleQuantityChange}
                   />
                   {errors.quantity && (
                     <p className="text-sm text-red-500">{errors.quantity}</p>
@@ -128,7 +123,7 @@ export default function Edit({ campaign }: EditProps) {
                 <Label>Trạng thái</Label>
                 <Select
                   value={data.status}
-                  onValueChange={(value) => setData("status", value)}
+                  onValueChange={(value: 'active' | 'closed') => setData('status', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Chọn trạng thái" />

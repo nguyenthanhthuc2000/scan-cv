@@ -21,6 +21,7 @@ export interface Campaign {
   status: 'active' | 'closed';
   resumes_count: number;
   created_at: string;
+  description?: string;
 }
 
 interface Props extends PageProps {

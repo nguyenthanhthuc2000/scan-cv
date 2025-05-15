@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\RecruitmentCampaign;
 use Carbon\Carbon;
@@ -16,7 +15,7 @@ class RecruitmentCampaignSeeder extends Seeder
     {
         $campaigns = [
             [
-                'name' => 'Tuyển dụng Frontend Developer 2024',
+                'title' => 'Tuyển dụng Frontend Developer 2024',
                 'description' => 'Chúng tôi đang tìm kiếm Frontend Developer có kinh nghiệm với React/Vue.js',
                 'position' => 'Frontend Developer',
                 'quantity' => 2,
@@ -25,7 +24,7 @@ class RecruitmentCampaignSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'name' => 'Tuyển dụng Backend Developer 2024',
+                'title' => 'Tuyển dụng Backend Developer 2024',
                 'description' => 'Tuyển Backend Developer có kinh nghiệm với PHP/Laravel',
                 'position' => 'Backend Developer',
                 'quantity' => 3,
@@ -34,7 +33,7 @@ class RecruitmentCampaignSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'name' => 'Tuyển dụng UI/UX Designer',
+                'title' => 'Tuyển dụng UI/UX Designer',
                 'description' => 'Cần tuyển UI/UX Designer có kinh nghiệm thiết kế sản phẩm số',
                 'position' => 'UI/UX Designer',
                 'quantity' => 1,
@@ -43,7 +42,7 @@ class RecruitmentCampaignSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'name' => 'Tuyển dụng DevOps Engineer',
+                'title' => 'Tuyển dụng DevOps Engineer',
                 'description' => 'Tìm kiếm DevOps Engineer có kinh nghiệm với AWS/Docker',
                 'position' => 'DevOps Engineer',
                 'quantity' => 1,
