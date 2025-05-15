@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RecruitmentCampaign extends Model
 {
+    protected $table = 'recruitment_campaigns';
+
+
     protected $fillable = [
-        'name',
+        'title',
         'description',
         'position',
         'quantity',

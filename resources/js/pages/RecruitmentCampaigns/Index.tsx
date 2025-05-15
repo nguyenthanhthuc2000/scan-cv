@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 
-interface Campaign {
+export interface Campaign {
   id: number;
-  name: string;
+  title: string;
   position: string;
   quantity: number;
   dates: string;
@@ -46,7 +46,7 @@ export default function Index({ campaigns }: Props) {
               </p>
             </div>
             <Link href={route('recruitment-campaigns.create')}>
-              <Button>Tạo đợt tuyển dụng</Button>
+              <Button>Tạo mới</Button>
             </Link>
           </div>
 
@@ -67,7 +67,7 @@ export default function Index({ campaigns }: Props) {
                 <TableBody>
                   {campaigns.map((campaign) => (
                     <TableRow key={campaign.id}>
-                      <TableCell>{campaign.name}</TableCell>
+                      <TableCell>{campaign.title}</TableCell>
                       <TableCell>{campaign.position}</TableCell>
                       <TableCell>{campaign.quantity}</TableCell>
                       <TableCell>{campaign.dates}</TableCell>
@@ -79,7 +79,7 @@ export default function Index({ campaigns }: Props) {
                       <TableCell>{campaign.resumes_count}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Link href={route('recruitment-campaigns.edit', campaign.id)}>
+                          <Link href={route('recruitment-campaigns.edit', { recruitment_campaign: campaign.id })}>
                             <Button variant="outline" size="sm">
                               Chỉnh sửa
                             </Button>

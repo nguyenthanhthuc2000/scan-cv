@@ -81,9 +81,9 @@ class ResumeController extends Controller
             })
             ->withQueryString();
 
-        $recruitmentCampaigns = RecruitmentCampaign::select('id', 'name')->get()->prepend([
+        $recruitmentCampaigns = RecruitmentCampaign::select('id', 'title')->get()->prepend([
             'id' => 'all',
-            'name' => 'Tất cả đợt tuyển dụng',
+            'title' => 'Tất cả đợt tuyển dụng',
         ])->toArray();
 
         return Inertia::render('Resumes/Index', [

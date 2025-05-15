@@ -13,7 +13,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-    
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -21,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('resumes/{resume}/status', [ResumeController::class, 'updateStatus'])->name('resumes.status');
     Route::get('resumes/{resume}/download', [ResumeController::class, 'download'])->name('resumes.download');
     Route::resource('recruitment-campaigns', RecruitmentCampaignController::class);
+    // Route::get('/recruitment-campaigns/{campaign}', [RecruitmentCampaignController::class, 'show']);
 });
 
 require __DIR__.'/settings.php';

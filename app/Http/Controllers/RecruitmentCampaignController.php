@@ -17,7 +17,7 @@ class RecruitmentCampaignController extends Controller
             ->map(function ($campaign) {
                 return [
                     'id' => $campaign->id,
-                    'name' => $campaign->name,
+                    'title' => $campaign->title,
                     'position' => $campaign->position,
                     'quantity' => $campaign->quantity,
                     'dates' => $campaign->formatted_dates,
@@ -39,16 +39,16 @@ class RecruitmentCampaignController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
+        $request->request->add(['start_date' => now()]);
+        $request->validate([
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'position' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:1',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after:start_date',
+            'quantity' => 'required|integer|min:1|max:100',
+            'status' => 'required',
         ]);
 
-        RecruitmentCampaign::create($validated);
+        RecruitmentCampaign::create($request->all());
 
         return redirect()->route('recruitment-campaigns.index')
             ->with('success', 'Đã tạo đợt tuyển dụng mới');
@@ -57,23 +57,21 @@ class RecruitmentCampaignController extends Controller
     public function edit(RecruitmentCampaign $campaign)
     {
         return Inertia::render('RecruitmentCampaigns/Edit', [
-            'campaign' => $campaign
+            'campaign' => $campaign,
         ]);
     }
 
     public function update(Request $request, RecruitmentCampaign $campaign)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
+        $request->validate([
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'position' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after:start_date',
             'status' => 'required|in:active,closed',
         ]);
 
-        $campaign->update($validated);
+        $campaign->update($request->all());
 
         return redirect()->route('recruitment-campaigns.index')
             ->with('success', 'Đã cập nhật đợt tuyển dụng');

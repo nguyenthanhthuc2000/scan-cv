@@ -18,9 +18,9 @@ import { ResumeDetailDialog } from '@/components/resume-detail-dialog';
 import { Pagination } from '@/components/ui/pagination';
 import { ResumeFilters, FiltersState } from '@/components/resume-filters';
 
-interface RecruitmentCampaign {
+export interface RecruitmentCampaign {
   id: string;
-  name: string;
+  title: string;
 }
 
 interface Props extends PageProps {

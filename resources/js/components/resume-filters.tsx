@@ -29,10 +29,7 @@ export interface FiltersState {
   recruitment_campaign_id: string;
 }
 
-interface RecruitmentCampaign {
-  id: string;
-  name: string;
-}
+import { RecruitmentCampaign } from '@/pages/Resumes/Index';
 
 interface ResumeFiltersProps {
   filters: FiltersState;
@@ -147,7 +144,7 @@ export function ResumeFilters({ filters, recruitmentCampaigns = [], onChange, on
             <SelectContent>
               {recruitmentCampaigns.map((option, index) => (
                 <SelectItem key={index} value={option.id}>
-                  {option.name}
+                  {option.title}
                 </SelectItem>
               ))}
             </SelectContent>
