@@ -16,7 +16,12 @@ import { ArrowUpDown } from 'lucide-react';
 import { useState } from 'react';
 import { ResumeDetailDialog } from '@/components/resume-detail-dialog';
 import { Pagination } from '@/components/ui/pagination';
-import { ResumeFilters } from '@/components/resume-filters';
+import { ResumeFilters, FiltersState } from '@/components/resume-filters';
+
+interface RecruitmentCampaign {
+  id: string;
+  name: string;
+}
 
 interface Props extends PageProps {
   resumes: {
@@ -36,27 +41,24 @@ interface Props extends PageProps {
     field: string;
     direction: 'asc' | 'desc';
   };
-  filters?: {
-    status: string;
-    score_min: string;
-    score_max: string;
-    date_from: string;
-    date_to: string;
-  };
+  filters?: FiltersState;
+  recruitment_campaigns: RecruitmentCampaign[];
 }
 
-export default function Index({ resumes, sort, filters: initialFilters }: Props) {
+export default function Index({ resumes, sort, filters: initialFilters, recruitment_campaigns }: Props) {
   const [currentSort, setCurrentSort] = useState(sort || { field: '', direction: 'asc' });
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [filters, setFilters] = useState({
+    candidate_name: initialFilters?.candidate_name || '',
     status: initialFilters?.status || 'all',
     score_min: initialFilters?.score_min || '',
     score_max: initialFilters?.score_max || '',
     date_from: initialFilters?.date_from ? new Date(initialFilters.date_from) : undefined,
     date_to: initialFilters?.date_to ? new Date(initialFilters.date_to) : undefined,
+    recruitment_campaign_id: initialFilters?.recruitment_campaign_id || 'all',
   });
-
+  
   const handleSort = (field: string) => {
     const direction = currentSort.field === field && currentSort.direction === 'asc' ? 'desc' : 'asc';
     setCurrentSort({ field, direction });
@@ -75,7 +77,7 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
     setIsDetailOpen(true);
   };
 
-  const handleFiltersChange = (newFilters: typeof filters) => {
+  const handleFiltersChange = (newFilters: FiltersState) => {
     setFilters(newFilters);
     router.get(route('resumes.index'), { 
       sort: currentSort.field,
@@ -89,11 +91,13 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
 
   const handleResetFilters = () => {
     const defaultFilters = {
+      candidate_name: '',
       status: 'all',
       score_min: '',
       score_max: '',
       date_from: undefined,
       date_to: undefined,
+      recruitment_campaign_id: 'all',
     };
     setFilters(defaultFilters);
     router.get(route('resumes.index'), { 
@@ -105,13 +109,15 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
     });
   };
 
-  const formatFilters = (filters: typeof filters) => {
+  const formatFilters = (filters: FiltersState) => {
     return {
+      candidate_name: filters.candidate_name,
       status: filters.status,
       score_min: filters.score_min,
       score_max: filters.score_max,
       date_from: filters.date_from?.toISOString().split('T')[0],
       date_to: filters.date_to?.toISOString().split('T')[0],
+      recruitment_campaign_id: filters.recruitment_campaign_id,
     };
   };
 
@@ -121,6 +127,10 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
   
   const reviewResume = () => {
     window.open('https://wakeup-s3.s3.ap-southeast-1.amazonaws.com/public/categories/CV_Nguyen_Van_Hoang_09_2023.pdf', '_blank');
+  };
+
+  const handleDeleteResume = (resume: Resume) => {
+    alert('Feature is updating');
   };
 
   return (
@@ -145,6 +155,7 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
             filters={filters}
             onChange={handleFiltersChange}
             onReset={handleResetFilters}
+            recruitmentCampaigns={recruitment_campaigns}
           />
 
           <div className="bg-white overflow-hidden shadow-sm rounded-lg">
@@ -173,7 +184,6 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
                         <ArrowUpDown className="h-4 w-4" />
                       </Button>
                     </TableHead>
-                    <TableHead>Kích thước</TableHead>
                     <TableHead>Ngày tạo</TableHead>
                     <TableHead>Thao tác</TableHead>
                   </TableRow>
@@ -190,7 +200,6 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
                           ? `${resume.ai_overall_score}/100`
                           : 'Chưa chấm điểm'}
                       </TableCell>
-                      <TableCell>{resume.formatted_file_size}</TableCell>
                       <TableCell>
                         {new Date(resume.created_at).toLocaleDateString('vi-VN')}
                       </TableCell>
@@ -211,6 +220,13 @@ export default function Index({ resumes, sort, filters: initialFilters }: Props)
                               Xem CV
                             </Button>
                           </Link>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleDeleteResume(resume)}
+                          >
+                            Xoá
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>

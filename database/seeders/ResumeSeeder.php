@@ -20,16 +20,15 @@ class ResumeSeeder extends Seeder
         
         // Tạo 20 CV mẫu
         foreach (range(1, 20) as $index) {
-            $campaign = $campaigns->random(); // Chọn ngẫu nhiên một đợt tuyển dụng
+            $campaign = $campaigns->random();
             
             Resume::create([
-                'user_id' => rand(1, 10), // Giả sử có 10 users từ UserSeeder
                 'recruitment_campaign_id' => $campaign->id,
                 'candidate_name' => $faker->name,
                 'file_path' => 'resumes/sample.pdf',
                 'file_name' => 'CV_' . $faker->lastName . '_' . $faker->firstName . '.pdf',
                 'mime_type' => 'application/pdf',
-                'file_size' => rand(500000, 2000000), // 500KB to 2MB
+                'file_size' => rand(500000, 2000000),
                 'status' => $faker->randomElement(['pending', 'reviewing', 'approved', 'rejected']),
                 'skills' => json_encode([
                     $faker->randomElement(['PHP', 'Laravel', 'React', 'Vue.js', 'Node.js']),

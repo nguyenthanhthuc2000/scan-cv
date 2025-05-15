@@ -84,7 +84,7 @@ export default function Index({ campaigns }: Props) {
                               Chỉnh sửa
                             </Button>
                           </Link>
-                          <Link href={route('resumes.index', { campaign: campaign.id })}>
+                          <Link href={route('resumes.index', { recruitment_campaign_id: campaign.id })}>
                             <Button variant="outline" size="sm">
                               Xem CV
                             </Button>

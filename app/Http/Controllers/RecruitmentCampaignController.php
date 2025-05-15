@@ -11,6 +11,7 @@ class RecruitmentCampaignController extends Controller
     public function index()
     {
         $campaigns = RecruitmentCampaign::query()
+            ->withCount('resumes')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($campaign) {
@@ -21,8 +22,8 @@ class RecruitmentCampaignController extends Controller
                     'quantity' => $campaign->quantity,
                     'dates' => $campaign->formatted_dates,
                     'status' => $campaign->status,
-                    'resumes_count' => $campaign->resumes()->count(),
                     'created_at' => $campaign->created_at,
+                    'resumes_count' => $campaign->resumes_count,
                 ];
             });
 

@@ -19,17 +19,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-interface FiltersState {
+export interface FiltersState {
+  candidate_name: string;
   status: string;
   score_min: string;
   score_max: string;
   date_from: Date | undefined;
   date_to: Date | undefined;
+  recruitment_campaign_id: string;
+}
+
+interface RecruitmentCampaign {
+  id: string;
+  name: string;
 }
 
 interface ResumeFiltersProps {
   filters: FiltersState;
   onChange: (filters: FiltersState) => void;
+  recruitmentCampaigns: RecruitmentCampaign[];
   onReset: () => void;
 }
 
@@ -41,21 +49,23 @@ const STATUS_OPTIONS = [
   { value: "rejected", label: "Từ chối" },
 ];
 
-export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps) {
+export function ResumeFilters({ filters, recruitmentCampaigns = [], onChange, onReset }: ResumeFiltersProps) {
   const handleChange = (key: keyof FiltersState, value: FiltersState[keyof FiltersState]) => {
     onChange({ ...filters, [key]: value });
   };
 
   const hasActiveFilters =
+    filters.candidate_name !== "" ||
     filters.status !== "all" ||
     filters.score_min !== "" ||
     filters.score_max !== "" ||
     filters.date_from !== undefined ||
-    filters.date_to !== undefined;
+    filters.date_to !== undefined ||
+    filters.recruitment_campaign_id !== "all";
 
   return (
     <div className="bg-white border rounded-lg p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
         <h3 className="text-lg font-medium">Bộ lọc</h3>
         {hasActiveFilters && (
           <Button
@@ -71,6 +81,17 @@ export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps
       </div>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="space-y-2">
+          <Label>Tên ứng viên</Label>
+          <Input
+            id="candidate_name"
+            type="text"
+            placeholder="Nhập tên ứng viên"
+            value={filters.candidate_name}
+            onChange={e => handleChange('candidate_name', e.target.value)}
+          />
+        </div>
+        
         <div className="space-y-2">
           <Label>Trạng thái</Label>
           <Select
@@ -92,13 +113,13 @@ export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps
 
         <div className="space-y-2">
           <Label>Điểm AI</Label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between space-x-2">
             <Input
               type="number"
               placeholder="Từ"
               value={filters.score_min}
               onChange={(e) => handleChange("score_min", e.target.value)}
-              className="w-full sm:w-24"
+              className="w-full sm:w-28"
               min="0"
               max="100"
             />
@@ -108,13 +129,30 @@ export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps
               placeholder="Đến"
               value={filters.score_max}
               onChange={(e) => handleChange("score_max", e.target.value)}
-              className="w-full sm:w-24"
+              className="w-full sm:w-28"
               min="0"
               max="100"
             />
           </div>
         </div>
-
+        <div className="space-y-2">
+          <Label>Đợt tuyển dụng</Label>
+          <Select
+            value={filters.recruitment_campaign_id}
+            onValueChange={(value) => handleChange("recruitment_campaign_id", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Chọn đợt tuyển dụng" />
+            </SelectTrigger>
+            <SelectContent>
+              {recruitmentCampaigns.map((option, index) => (
+                <SelectItem key={index} value={option.id}>
+                  {option.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="space-y-2">
           <Label>Từ ngày</Label>
           <Popover>
@@ -139,7 +177,6 @@ export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps
                 mode="single"
                 selected={filters.date_from}
                 onSelect={(date) => handleChange("date_from", date)}
-                initialFocus
                 locale={vi}
               />
             </PopoverContent>
@@ -170,7 +207,6 @@ export function ResumeFilters({ filters, onChange, onReset }: ResumeFiltersProps
                 mode="single"
                 selected={filters.date_to}
                 onSelect={(date) => handleChange("date_to", date)}
-                initialFocus
                 locale={vi}
               />
             </PopoverContent>

@@ -6,6 +6,7 @@ use App\Models\Resume;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Models\RecruitmentCampaign;
 
 class ResumeController extends Controller
 {
@@ -47,6 +48,14 @@ class ResumeController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
+        if ($request->filled('recruitment_campaign_id') && $request->recruitment_campaign_id !== 'all') {
+            $query->where('recruitment_campaign_id', $request->recruitment_campaign_id);
+        }
+
+        if ($request->filled('candidate_name')) {
+            $query->where('candidate_name', 'like', '%' . $request->candidate_name . '%');
+        }
+
         $resumes = $query->paginate(10)
             ->through(function ($resume) {
                 return [
@@ -72,6 +81,11 @@ class ResumeController extends Controller
             })
             ->withQueryString();
 
+        $recruitmentCampaigns = RecruitmentCampaign::select('id', 'name')->get()->prepend([
+            'id' => 'all',
+            'name' => 'Tất cả đợt tuyển dụng',
+        ])->toArray();
+
         return Inertia::render('Resumes/Index', [
             'resumes' => [
                 'data' => $resumes->items(),
@@ -91,12 +105,15 @@ class ResumeController extends Controller
                 'direction' => $sortDirection,
             ],
             'filters' => [
+                'candidate_name' => $request->candidate_name,
                 'status' => $request->status,
                 'score_min' => $request->score_min,
                 'score_max' => $request->score_max,
                 'date_from' => $request->date_from,
                 'date_to' => $request->date_to,
+                'recruitment_campaign_id' => $request->recruitment_campaign_id,
             ],
+            'recruitment_campaigns' => $recruitmentCampaigns,
         ]);
     }
 
