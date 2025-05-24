@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('recruitment-campaigns', RecruitmentCampaignController::class);
     1   => '',
     2=> '',
+    3=> '',
     Route::get('/recruitment-campaigns/{campaign}', [RecruitmentCampaignController::class, 'show']);
 });
 
