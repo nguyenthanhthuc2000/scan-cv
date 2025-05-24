@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('resumes/{resume}/download', [ResumeController::class, 'download'])->name('resumes.download');
     Route::resource('recruitment-campaigns', RecruitmentCampaignController::class);
     1   => '',
+    2=> '',
     Route::get('/recruitment-campaigns/{campaign}', [RecruitmentCampaignController::class, 'show']);
 });
 
