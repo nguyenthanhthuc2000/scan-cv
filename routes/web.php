@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('resumes/{resume}/status', [ResumeController::class, 'updateStatus'])->name('resumes.status');
     Route::get('resumes/{resume}/download', [ResumeController::class, 'download'])->name('resumes.download');
     Route::resource('recruitment-campaigns', RecruitmentCampaignController::class);
+    1   => '',
     Route::get('/recruitment-campaigns/{campaign}', [RecruitmentCampaignController::class, 'show']);
 });
 
